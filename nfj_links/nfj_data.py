@@ -1,12 +1,14 @@
-from nfj_links import Nfj_links
 import requests
 from bs4 import BeautifulSoup
 import csv
+from pandas import read_csv
+import io
 
 
 def main():
-    # Create list of links for each job listing in NoFluffJobs
-    nfj_urls = Nfj_links()
+    # Load list of links for each job listing in NoFluffJobs
+    data = read_csv("nfj_links.csv")
+    nfj_urls = data["url"].tolist()
 
     # Create list to store results
     results = []
@@ -18,9 +20,12 @@ def main():
             results.append(data)
         except AttributeError:
             continue
+        except requests.exceptions.RequestException:
+            continue
+        print(data)
 
     # Open a new file in write mode
-    with open('job_listings.csv', 'w', newline='') as csvfile:
+    with io.open('job_listings.csv', 'w', newline='') as csvfile:
     # Create a CSV writer
         writer = csv.DictWriter(csvfile, fieldnames=['listing_name', 'categories', 'seniority', 'required_skills'])
 
@@ -28,13 +33,17 @@ def main():
         writer.writeheader()
 
         # Iterate over the list of dictionaries and write each one to the CSV file
+        
         for result in results:
-            writer.writerow({
-                'listing_name': result['listing_name'],
-                'categories': result['categories'],
-                'seniority': result['seniority'],
-                'required_skills': result['required_skills']
-            })
+            try:
+                writer.writerow({
+                    'listing_name': result['listing_name'],
+                    'categories': result['categories'],
+                    'seniority': result['seniority'],
+                    'required_skills': result['required_skills']
+                })
+            except TypeError:
+                continue
 
 
 def get_nfj_data(url):
@@ -56,7 +65,7 @@ def get_nfj_data(url):
     # Parse the HTML of the webpage
     soup = BeautifulSoup(response.text, 'html.parser')
 
-    # Find the information iabout listing's name
+    # Find the information about listing's name
     try:
         listing_name = soup.find('h1', class_='font-weight-bold').text
     except AttributeError:

@@ -20,7 +20,7 @@ def Nfj_links():
   links = set()
 
   # Loop through all the pages
-  for page_number in range(1, 3):
+  for page_number in range(1, 17):
     # Send an HTTP request to the URL of the current page
     url = f"https://nofluffjobs.com/pl/Python?gclid=CjwKCAiAy_CcBhBeEiwAcoMRHPy1h93drfenR1DoO7CYBQ4HIoXLV0CVdcfn431PCxxIj7Oxw7vFDhoC1_wQAvD_BwE&page={page_number}"
     page = requests.get(url)
@@ -29,9 +29,10 @@ def Nfj_links():
     soup = BeautifulSoup(page.content, 'html.parser')
 
     # Find all <a> elements with specified attribute and id
-    a_elements = soup.find_all('a', attrs={'nfj-postings-item': '', 'id': lambda x: x and x.startswith('nfjPostingListItem-')})
+    a_elements = soup.find_all("a", attrs={"nfj-postings-item": "", "id": lambda x: x and x.startswith("nfjPostingListItem-")})
     for a in a_elements:
-      links.add(a['href'])
+      links.add(a["href"])
+      print(a["href"])
 
 
   # Print the list of links
