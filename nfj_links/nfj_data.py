@@ -25,9 +25,9 @@ def main():
         print(data)
 
     # Open a new file in write mode
-    with io.open('job_listings.csv', 'w', newline='') as csvfile:
+    with io.open("job_listings.csv", "w", newline="") as csvfile:
     # Create a CSV writer
-        writer = csv.DictWriter(csvfile, fieldnames=['listing_name', 'categories', 'seniority', 'required_skills'])
+        writer = csv.DictWriter(csvfile, fieldnames=["listing_name", "categories", "seniority", "required_skills"])
 
         # Write column names
         writer.writeheader()
@@ -37,13 +37,16 @@ def main():
         for result in results:
             try:
                 writer.writerow({
-                    'listing_name': result['listing_name'],
-                    'categories': result['categories'],
-                    'seniority': result['seniority'],
-                    'required_skills': result['required_skills']
+                    "listing_name": result["listing_name"],
+                    "categories": result["categories"],
+                    "seniority": result["seniority"],
+                    "required_skills": result["required_skills"]
                 })
             except TypeError:
                 continue
+            except UnicodeEncodeError:
+                print(result["listing_name"])
+
 
 
 def get_nfj_data(url):
@@ -63,26 +66,26 @@ def get_nfj_data(url):
     response = requests.get(url)
 
     # Parse the HTML of the webpage
-    soup = BeautifulSoup(response.text, 'html.parser')
+    soup = BeautifulSoup(response.text, "html.parser")
 
     # Find the information about listing's name
     try:
-        listing_name = soup.find('h1', class_='font-weight-bold').text
+        listing_name = soup.find("h1", class_="font-weight-bold").text
     except AttributeError:
         return None
 
     # Find the category names in elements with the attribute "commonpostingcattech"
     categories = []
-    for li in soup.find_all('li', attrs={"commonpostingcattech": True}):
-        for a in li.find_all('a'):
+    for li in soup.find_all("li", attrs={"commonpostingcattech": True}):
+        for a in li.find_all("a"):
             categories += [a.text]
 
 
     # Find the seniority in the element with the id "posting-seniority"
-    seniority = soup.find('li', id='posting-seniority').span.text
+    seniority = soup.find("li", id="posting-seniority").span.text
 
     # Find the required skills in elements with the attribute "commonpostingitemtag"
-    required_skills = [li.text for li in soup.find_all('li', attrs={"commonpostingitemtag": True})]
+    required_skills = [li.text for li in soup.find_all("li", attrs={"commonpostingitemtag": True})]
 
     # Store the data in a dictionary and return it
     data = {
