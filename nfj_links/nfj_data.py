@@ -46,6 +46,7 @@ def main():
                 continue
             except UnicodeEncodeError:
                 print(result["listing_name"])
+                continue
 
 
 
