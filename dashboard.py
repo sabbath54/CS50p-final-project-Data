@@ -10,8 +10,20 @@ st.set_page_config(
 
 df = pd.read_csv(r"C:\Users\lukas\Code\Scrapers\Final_data.csv")
 
-st.dataframe(df)
-
 #----SIDEBAR----
 st.sidebar.header("Filter here:")
-city = st.sidebar
+seniority = st.sidebar.multiselect(
+    "Select seniority:",
+    options=df["seniority"].unique(),
+)
+
+categorie = st.sidebar.multiselect(
+    "Select categorie:",
+    options=df["categories"].unique(),
+)
+
+df_selection = df.query(
+    "seniority == @seniority & categories == @categorie"
+)
+
+st.dataframe(df_selection)
