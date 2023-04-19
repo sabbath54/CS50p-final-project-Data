@@ -8,7 +8,7 @@ st.set_page_config(
     layout="wide"
 )
 
-df = pd.read_csv(r"C:\Users\lukas\Code\Scrapers\Final_data.csv")
+df = pd.read_csv(r"C:\Users\lukas\Code\Scrapers\data.csv")
 
 # ---- SIDEBAR ----
 st.sidebar.header("Filter here:")
