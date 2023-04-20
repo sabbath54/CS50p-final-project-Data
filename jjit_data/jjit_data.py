@@ -59,48 +59,65 @@ def Get_jjit_links():
     return links
 
 def clear_links(links):
-    """
-    List of links contains multiple urls for same listing but in different locations, this func clear urls that has the same beginning
-    :param links: List of urls to be cleared
+ """
+    Removes duplicate URLs that have the same beginning in a list of URLs.
+
+    :param links: List of URLs to be cleared of duplicates.
     :type links: List of strings
-    :return: List of urls without duplicates for same location
+    :raises: None
+    :return: A new list of URLs without duplicates for the same location.
     :rtype: List of strings
     """
+    # Create an empty list to store the unique urls
     unique_strings = []
+
+    # Iterate over each url in the input list
     for s in links:
+        # Skip empty strings and check if the first 16 characters of the current url match
+        # the first 16 characters of any url in the list of unique urls
         if not s or s[:16] in [x[:16] for x in unique_strings]:
             continue
+        # If the current url is unique, add it to the list of unique urls
         unique_strings.append(s)
+
     return unique_strings
 
 
-def Get_jjit_data(link):
+def get_jjit_data(link: str) -> dict:
     """
-    Scrape data from from each job listing. Data to be scraped:
-    Listing name
-    Category of listing
-    Experience (Intern, Junior, Mid, Senior, Lead)
-    Tech stack
-    :param link: Link of webpage to be scraped
-    :type link: String
-    :raise !!!!!!! TypeError: If n is not an int --- explains what error might be raised by func
-    :return: Listing name, category, required skills and seniority
-    :rtype: Dictionary
+    Scrape data from a job listing webpage on the Just Join IT website.
+
+    :param link: str, the link of the job listing webpage on the Just Join IT website
+    :type link: str
+    :raise TypeError: if link is not a str
+    :return: A dictionary containing the scraped data for the given job listing webpage.
+             Keys in the dictionary:
+                 - 'listing_name': str, the name of the job listing
+                 - 'categories': str, the category of the job listing
+                 - 'seniority': str, the required experience level for the job
+                 - 'required_skills': list of str, the required skills for the job
+    :rtype: dict
     """
+
+    # If link parameter is not string raise TypeError
+    if not isinstance(link, str):
+        raise TypeError("The link argument must be a string")
+
     # Create session instance
     s = requests.Session()
 
     # Define base url
     url = f"https://justjoin.it/api/offers/{link}"
 
-    # Make GET request
+    # Make a GET request to URL
     data = s.get(url)
 
-    # Format request as JSON
+    # Format the response as JSON
     data = data.json()
 
     # Create empty list to store skills
     required_skills = []
+
     # Iterate through all results in skills category
     for skill in data["skills"]:
         required_skills.append(skill["name"])
