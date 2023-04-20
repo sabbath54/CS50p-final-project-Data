@@ -3,18 +3,28 @@ from bs4 import BeautifulSoup
 import csv
 
 def main():
+  # Get set of links
   data = Nfj_links()
  
+ # Open CSV file in writer mode
   with open("nfj_links.csv", "w", newline="") as csvfile:
     writer = csv.DictWriter(csvfile, fieldnames=["url"])
     
+    # Write header to CSV file
     writer.writeheader()
+    
+    # Write URLs to CSV file
     for result in data:
       writer.writerow({
         "url": result
       })
 
 def Nfj_links():
+    """
+    Scrape links of job listings from 16 pages on Nofluffjobs website.
+    :return: Set of links
+    :rtype: Set
+    """
 
   # Initialize an empty set to store the links
   links = set()
@@ -35,7 +45,7 @@ def Nfj_links():
       print(a["href"])
 
 
-  # Print the list of links
+  # Return the list of links
   return links
 
 
