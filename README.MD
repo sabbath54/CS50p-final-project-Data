@@ -4,8 +4,6 @@
 
 #### Description:
 
-My Name is Lukasz Marszalek, I come from Poland, Wrocław, and this is my CS50p final project!
-
 This project main objective was to find what skills are most usefull to get a Python-related job in Polish IT industry.
 
 Project contains three separate parts:
